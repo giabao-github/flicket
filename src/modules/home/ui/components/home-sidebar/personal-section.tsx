@@ -42,7 +42,7 @@ export const PersonalSection = () => {
       <SidebarGroupLabel>
         <Link
           href='/users/current' 
-          className='flex flex-row items-center gap-x-2 cursor-pointer text-base mb-4 w-full px-2 py-1.5 rounded-lg hover:bg-sidebar-accent'>
+          className='flex flex-row items-center gap-x-2 cursor-pointer text-base mb-4 w-full px-2 py-1.5 rounded-lg hover:bg-sidebar-accent select-none'>
           You
           <ChevronRightIcon size={18} />
         </Link>
@@ -61,6 +61,7 @@ export const PersonalSection = () => {
                     return clerk.openSignIn();
                   }
                 }}
+                className='select-none'
               > 
                 <Link href={item.url} className='flex items-center gap-4'>
                   <item.icon />

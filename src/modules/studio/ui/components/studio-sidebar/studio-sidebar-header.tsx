@@ -30,6 +30,7 @@ export const StudioSidebarHeader = () => {
               avatarUrl={user.imageUrl}
               name={user.fullName ?? 'User'}
               size='sm'
+              className='select-none'
             />
             <span className='text-base'>Your profile</span>
           </Link>
@@ -44,7 +45,7 @@ export const StudioSidebarHeader = () => {
         <UserAvatar
           avatarUrl={user?.imageUrl}
           name={user.fullName ?? 'User'}
-          className='size-[120px] hover:opacity-80 transition-opacity'
+          className='size-[120px] hover:opacity-80 transition-opacity select-none'
         />
       </Link>
       <div className='flex flex-col gap-y-1 items-center mt-4'>

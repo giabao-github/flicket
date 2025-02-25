@@ -36,7 +36,7 @@ export const AuthButton = () => {
           <Button
             variant='outline'
             size={"lg"}
-            className='px-4 py-4 text-base font-medium text-secondary hover:text-secondary/90 border-secondary/20 rounded-full shadow-none [&_svg]:size-5'
+            className='px-4 py-4 text-base font-medium text-secondary hover:text-secondary/90 border-secondary/20 rounded-full shadow-none [&_svg]:size-5 select-none'
           >
             <UserCircle2Icon />
             Sign in

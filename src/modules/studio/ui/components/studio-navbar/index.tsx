@@ -21,7 +21,7 @@ export const StudioNavbar = () => {
               width={180} 
               height={0}
               priority
-              className='w-[180px] h-auto object-contain'
+              className='w-[180px] h-auto object-contain select-none'
             />
           </div>
           </Link>

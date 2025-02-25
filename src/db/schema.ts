@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-zod";
 
 
 export const users = pgTable('users', {
@@ -27,10 +28,27 @@ export const categoryRelations = relations(users, ({ many }) => ({
   videos: many(videos)
 }));
 
+export const videoVisibility = pgEnum('video_visibility', [
+  'private',
+  'public'
+]);
+
 export const videos = pgTable('videos', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: text('title').notNull(),
-  description: text('description'),
+  description: text('description').default('No description').notNull(),
+  muxStatus: text('mux_status').default('unknown').notNull(),
+  muxAssetId: text('mux_asset_id').unique(),
+  muxUploadId: text('mux_upload_id').unique(),
+  muxPlaybackId: text('mux_playback_id').unique(),
+  muxTrackId: text('mux_track_id').unique(),
+  muxTrackStatus: text('mux_track_status'),
+  thumbnailUrl: text('thumbnail_url'),
+  thumbnailKey: text('thumbnail_key'),
+  previewUrl: text('preview_url'),
+  previewKey: text('preview_key'),
+  duration: integer('duration').default(0).notNull(),
+  visibility: videoVisibility('visibility').default('private').notNull(),
   userId: uuid('user_id').references(() => users.id, {
     onDelete: 'cascade'
   }).notNull(),
@@ -40,6 +58,10 @@ export const videos = pgTable('videos', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+export const videoSelectSchema = createSelectSchema(videos);
+export const videoInsertSchema = createInsertSchema(videos);
+export const videoUpdateSchema = createUpdateSchema(videos);
 
 export const videoRelations = relations(videos, ({ one }) => ({
   user: one(users, {

@@ -1,9 +1,10 @@
+import { withUt } from "uploadthing/tw";
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 
-export default {
-    darkMode: ["class"],
-    content: [
+export default withUt ({
+	darkMode: 'class',
+  content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
@@ -19,7 +20,7 @@ export default {
   				foreground: 'hsl(var(--card-foreground))'
   			},
 				text: {
-					DEFAULT: '',
+					DEFAULT: '#6E6E6E',
 					foreground: '#929292'
 				},
   			popover: {
@@ -97,4 +98,4 @@ export default {
   	}
   },
   plugins: [tailwindcssAnimate],
-} satisfies Config;
+}) satisfies Config;
