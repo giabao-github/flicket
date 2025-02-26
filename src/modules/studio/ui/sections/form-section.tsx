@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { ErrorBoundary } from "react-error-boundary";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, LockIcon, MoreVerticalIcon, RotateCcwIcon, SparklesIcon, TrashIcon } from "lucide-react";
+import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, Loader2Icon, LockIcon, MoreVerticalIcon, RotateCcwIcon, SparklesIcon, TrashIcon } from "lucide-react";
 import { trpc } from "@/trpc/client";
 import { snakeCaseToTitle } from "@/lib/utils";
 import { videoUpdateSchema } from "@/db/schema";
@@ -62,7 +62,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
       toast.success('Video updated');
     },
     onError: (error) => {
-      toast.error('Oops! Something went wrong');
+      toast.error('Failed to update your video', { description: 'Please refresh the page and try again' });
       console.log('Error updating video:', error.message);
     }
   });
@@ -74,7 +74,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
       router.push('/studio');
     },
     onError: (error) => {
-      toast.error('Oops! Something went wrong');
+      toast.error('Failed to delete your video', { description: 'Please refresh the page and try again' });
       console.log('Error deleting video:', error.message);
     }
   });
@@ -86,8 +86,38 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
       toast.success('Thumbnail restored');
     },
     onError: (error) => {
-      toast.error('Oops! Something went wrong');
+      toast.error('Failed to restore your thumbnail', { description: 'Please refresh the page and try again' });
       console.log('Error restoring thumbnail:', error.message);
+    }
+  });
+
+  const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
+    onSuccess: () => {
+      toast.success('Thumbnail generation has started', { description: 'This could take a while' });
+    },
+    onError: (error) => {
+      toast.error('Failed to generate your thumbnail', { description: 'Please refresh the page and try again' });
+      console.log('Error generating thumbnail:', error.message);
+    }
+  });
+
+  const generateTitle = trpc.videos.generateTitle.useMutation({
+    onSuccess: () => {
+      toast.success('Title generation has started', { description: 'This could take a while' });
+    },
+    onError: (error) => {
+      toast.error('Failed to generate your title', { description: 'Please refresh the page and try again' });
+      console.log('Error generating title:', error.message);
+    }
+  });
+
+  const generateDescription = trpc.videos.generateDescription.useMutation({
+    onSuccess: () => {
+      toast.success('Description generation has started', { description: 'This could take a while' });
+    },
+    onError: (error) => {
+      toast.error('Failed to generate your description', { description: 'Please refresh the page and try again' });
+      console.log('Error generating description:', error.message);
     }
   });
 
@@ -138,7 +168,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
       </AlertDialog>
       <ThumbnailUploadModal 
         open={thumbnailModalOpen} 
-        onOpenChange={setThumbnailModalOpen}
+        onOpenChangeAction={setThumbnailModalOpen}
         videoId={videoId}
       />
       <Form {...form}>
@@ -183,8 +213,25 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-y-1'>
                     <FormLabel className='text-base'>
-                      Title
-                      {/* Add AI generated button */}
+                      <div
+                        title='Generate a title using AI. This feature may not work for non-English video.'
+                        className='flex items-center gap-x-3'
+                      >
+                        Title
+                        <Button
+                          size='icon'
+                          variant='outline'
+                          type='button'
+                          className='rounded-full size-6 [&_svg]:size-3'
+                          onClick={() => generateTitle.mutate({ id: videoId })}
+                          disabled={generateTitle.isPending || generateDescription.isPending}
+                        >
+                          {generateTitle.isPending 
+                            ? <Loader2Icon className='animate-spin' /> 
+                            : <SparklesIcon />
+                          }
+                        </Button>
+                      </div>
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -203,8 +250,25 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-y-1'>
                     <FormLabel className='text-base'>
-                      Description
-                      {/* Add AI generated button */}
+                    <div
+                        title='Generate a description using AI. This feature may not work for non-English video.'
+                        className='flex items-center gap-x-3'
+                      >
+                        Description
+                        <Button
+                          size='icon'
+                          variant='outline'
+                          type='button'
+                          className='rounded-full size-6 [&_svg]:size-3'
+                          onClick={() => generateDescription.mutate({ id: videoId })}
+                          disabled={generateDescription.isPending || !video.muxTrackId || generateTitle.isPending}
+                        >
+                          {generateDescription.isPending 
+                            ? <Loader2Icon className='animate-spin' /> 
+                            : <SparklesIcon />
+                          }
+                        </Button>
+                      </div>
                     </FormLabel>
                     <FormControl>
                       <Textarea
@@ -251,7 +315,10 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                               <ImagePlusIcon className='size-4 mr-1' />
                               Change
                             </DropdownMenuItem>
-                            <DropdownMenuItem className='cursor-pointer'>
+                            <DropdownMenuItem 
+                              onClick={() => generateThumbnail.mutate({ id: videoId })}
+                              className='cursor-pointer'
+                            >
                               <SparklesIcon className='size-4 mr-1' />
                               AI-generated
                             </DropdownMenuItem>
@@ -322,6 +389,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                           </p>
                         </Link>
                         <Button
+                          title='Copy link'
                           type='button'
                           variant='ghost'
                           size='icon'

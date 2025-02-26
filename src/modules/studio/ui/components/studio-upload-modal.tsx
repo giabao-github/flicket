@@ -17,7 +17,7 @@ export const StudioUploadModal = () => {
       utils.studio.getMany.invalidate();
     },
     onError: (error) => {
-      toast.error('Failed to create video');
+      toast.error('Failed to create video', { description: 'Please refresh the page and try again' });
       console.log('Error creating video:', error.message);
     }
   });

@@ -9,23 +9,23 @@ import { trpc } from "@/trpc/client";
 interface ThumbnailUploadModalProps {
   videoId: string;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChangeAction: (open: boolean) => void;
 }
 
-export const ThumbnailUploadModal = ({ videoId, open, onOpenChange }: ThumbnailUploadModalProps) => {
+export const ThumbnailUploadModal = ({ videoId, open, onOpenChangeAction }: ThumbnailUploadModalProps) => {
   const utils = trpc.useUtils();
 
   const onUploadComplete = () => {
     utils.studio.getMany.invalidate();
     utils.studio.getOne.invalidate({ id: videoId });
-    onOpenChange(false);
+    onOpenChangeAction(false);
     toast.success('Thumbnail updated');
   }
   return (
     <ResponsiveModal
       title='Upload a thumbnail'
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={onOpenChangeAction}
     >
       <UploadDropzone 
         endpoint='thumbnailUploader'

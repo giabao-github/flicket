@@ -121,7 +121,7 @@ export const VideosSectionSuspense = () => {
                           previewUrl={video.previewUrl}
                         />
                       </div>
-                      <div className='flex flex-col overflow-hidden gap-y-1'>
+                      <div className='flex flex-col overflow-hidden gap-y-1 max-w-[65%]'>
                         <span className='text-base line-clamp-1'>{video.title}</span>
                         <span className='text-sm text-text-foreground line-clamp-1'>
                           {video.description || 'No description'}
