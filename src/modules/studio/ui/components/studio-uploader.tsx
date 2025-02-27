@@ -34,7 +34,7 @@ export const StudioUploader = ({ endpoint, onSuccess }: StudioUploaderProps) => 
               variant='basic'
               className='rounded-full'
             >
-              Select a file
+              Browse a file
             </Button>
           </MuxUploaderFileSelect>
         </div>

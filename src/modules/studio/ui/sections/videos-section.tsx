@@ -31,13 +31,37 @@ const VideosSectionSkeleton = () => {
         <Table>
           <TableHeader>
             <TableRow className='text-base'>
-              <TableHead className='w-[520px] pl-10 py-1'>Video</TableHead>
-              <TableHead className='w-[210px]'>Visibility</TableHead>
-              <TableHead className='w-[164px]'>Status</TableHead>
-              <TableHead className='w-[229px]'>Date</TableHead>
-              <TableHead className='w-[147px]'>Views</TableHead>
-              <TableHead className='w-[238px]'>Comments</TableHead>
-              <TableHead className='w-[134px]'>Likes</TableHead>
+              <TableHead className='w-[520px] pl-[76px] py-1'>Video</TableHead>
+              <TableHead className='w-[275px]'>
+                <span className='flex justify-center items-center'>
+                  Display mode
+                </span>
+              </TableHead>
+              <TableHead className='w-[147px]'>
+                <span className='flex justify-center items-center'>
+                  Status
+                </span>
+              </TableHead>
+              <TableHead className='w-[214px]'>
+                <span className='flex justify-center items-center'>
+                  Date
+                </span>
+              </TableHead>
+              <TableHead className='w-[138px]'>
+                <span className='flex justify-center items-center'>
+                  Views
+                </span>
+              </TableHead>
+              <TableHead className='w-[222px]'>
+                <span className='flex justify-center items-center'>
+                  Comments
+                </span>
+              </TableHead>
+              <TableHead className='w-[125px]'>
+                <span className='flex justify-center items-center'>
+                  Likes
+                </span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -53,22 +77,34 @@ const VideosSectionSkeleton = () => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <Skeleton className='h-5 w-20' />
+                  <span className='flex justify-center items-center'>
+                    <Skeleton className='h-5 w-20' />
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <Skeleton className='h-5 w-16' />
+                  <span className='flex justify-center items-center'>
+                    <Skeleton className='h-5 w-16' />
+                  </span>
                 </TableCell>
                 <TableCell>
-                  <Skeleton className='h-5 w-24' />
+                  <span className='flex justify-center items-center'>
+                    <Skeleton className='h-5 w-24' />
+                  </span>
                 </TableCell>
                 <TableCell className='text-right'>
-                  <Skeleton className='h-5 w-12' />
+                  <span className='flex justify-center items-center'>
+                    <Skeleton className='h-5 w-12' />
+                  </span>
                 </TableCell>
                 <TableCell className='text-right'>
-                  <Skeleton className='h-5 w-12' />
+                  <span className='flex justify-center items-center'>
+                    <Skeleton className='h-5 w-12' />
+                  </span>
                 </TableCell>
                 <TableCell className='text-right'>
-                  <Skeleton className='h-5 w-12' />
+                  <span className='flex justify-center items-center'>
+                    <Skeleton className='h-5 w-12' />
+                  </span>
                 </TableCell>
               </TableRow>
             ))}
@@ -94,13 +130,37 @@ export const VideosSectionSuspense = () => {
         <Table>
           <TableHeader>
             <TableRow className='text-base'>
-              <TableHead className='w-[520px] pl-10 py-1'>Video</TableHead>
-              <TableHead>Display mode</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Views</TableHead>
-              <TableHead>Comments</TableHead>
-              <TableHead>Likes</TableHead>
+              <TableHead className='w-[520px] pl-[76px] py-1'>Video</TableHead>
+              <TableHead>
+                <span className='flex justify-center items-center'>
+                  Display mode
+                </span>
+              </TableHead>
+              <TableHead>
+                <span className='flex justify-center items-center'>
+                  Status
+                </span>
+              </TableHead>
+              <TableHead>
+                <span className='flex justify-center items-center'>
+                  Date
+                </span>
+              </TableHead>
+              <TableHead>
+                <span className='flex justify-center items-center'>
+                  Views
+                </span>
+              </TableHead>
+              <TableHead>
+                <span className='flex justify-center items-center'>
+                  Comments
+                </span>
+              </TableHead>
+              <TableHead>
+                <span className='flex justify-center items-center'>
+                  Likes
+                </span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -130,7 +190,7 @@ export const VideosSectionSuspense = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className='flex items-center'>
+                    <div className='flex items-center justify-center'>
                       {video.visibility === 'private' ? (
                         <LockIcon className='size-4 mr-2' />
                       ) : (
@@ -140,21 +200,29 @@ export const VideosSectionSuspense = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className='flex items-center'>
+                    <div className='flex items-center justify-center'>
                       {snakeCaseToTitle(video.muxStatus)}
                     </div>
                   </TableCell>
                   <TableCell className='truncate'>
-                    {format(new Date(video.createdAt), 'd MMM yyyy')}
+                    <span className='flex items-center justify-center'>
+                      {format(new Date(video.createdAt), 'd MMM yyyy')}
+                    </span>
                   </TableCell>
                   <TableCell>
-                    1326
+                    <span className='flex items-center justify-center'>
+                      1326
+                    </span>
                   </TableCell>
                   <TableCell>
-                    125
+                    <span className='flex items-center justify-center'>
+                      125
+                    </span>
                   </TableCell>
                   <TableCell>
-                    562
+                    <span className='flex items-center justify-center'>
+                      562
+                    </span>
                   </TableCell>
                 </TableRow>
               </Link>

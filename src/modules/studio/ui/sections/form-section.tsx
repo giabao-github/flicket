@@ -22,7 +22,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { VideoPlayer } from "@/modules/videos/ui/components/video-player";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { ThumbnailUploadModal } from "../components/thumbnail-upload-modal";
+import { ThumbnailGenerateModal } from "../components/thumbnail-generate-modal";
 import { THUMBNAIL_FALLBACK } from "@/modules/videos/constants";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 interface FormSectionProps {
@@ -41,7 +43,61 @@ export const FormSection = ({ videoId }: FormSectionProps) => {
 
 const FormSectionSkeleton = () => {
   return (
-    <p>Loading...</p>
+    <div>
+      <div className='flex items-center justify-between mb-8'>
+        <div className='space-y-2'>
+          <Skeleton className='h-8 w-40' />
+          <Skeleton className='h-5 w-[181px]' />
+        </div>
+        <div className='flex flex-row gap-x-4'>
+          <Skeleton className='h-9 w-[66px]' />
+          <Skeleton className='size-9' />
+        </div>
+      </div>
+      <div className='grid grid-cols-1 lg:grid-cols-5 gap-12'>
+        <div className='space-y-8 lg:col-span-3'>
+          <div className='space-y-3'>
+            <Skeleton className='h-6 w-[70px]' />
+            <Skeleton className='h-9 w-full' />
+          </div>
+          <div className='space-y-3'>
+            <Skeleton className='h-6 w-32' />
+            <Skeleton className='h-[218px] w-full' />
+          </div>
+          <div className='space-y-3'>
+            <Skeleton className='h-6 w-[84px]' />
+            <Skeleton className='h-[126px] w-[226px]' />
+          </div>
+          <div className='space-y-3'>
+            <Skeleton className='h-6 w-[72px]' />
+            <Skeleton className='h-9 w-full' />
+          </div>
+        </div>
+        <div className='flex flex-col gap-y-8 lg:col-span-2'>
+          <div className='bg-muted/50 flex flex-col gap-4 rounded-xl overflow-hidden h-fit'>
+            <Skeleton className='aspect-video' />
+            <div className='p-4 space-y-6'>
+              <div className='space-y-3'>
+                <Skeleton className='h-5 w-[68px]' />
+                <Skeleton className='my-2 h-5 w-full' />
+              </div>
+              <div className='space-y-2'>
+                <Skeleton className='h-5 w-[85px]' />
+                <Skeleton className='h-5 w-11' />
+              </div>
+              <div className='space-y-2'>
+                <Skeleton className='h-5 w-[98px]' />
+                <Skeleton className='h-5 w-11' />
+              </div>
+            </div>
+          </div>
+          <div className='space-y-3'>
+            <Skeleton className='h-6 w-[110px]' />
+            <Skeleton className='h-9 w-full' />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -50,6 +106,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
   const utils = trpc.useUtils();
 
   const [thumbnailModalOpen, setThumbnailModalOpen] = useState(false);
+  const [thumbnailGenerateModalOpen, setThumbnailGenerateModalOpen] = useState(false);
 
   const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
   const [categories] = trpc.categories.getMany.useSuspenseQuery();
@@ -88,16 +145,6 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     onError: (error) => {
       toast.error('Failed to restore your thumbnail', { description: 'Please refresh the page and try again' });
       console.log('Error restoring thumbnail:', error.message);
-    }
-  });
-
-  const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
-    onSuccess: () => {
-      toast.success('Thumbnail generation has started', { description: 'This could take a while' });
-    },
-    onError: (error) => {
-      toast.error('Failed to generate your thumbnail', { description: 'Please refresh the page and try again' });
-      console.log('Error generating thumbnail:', error.message);
     }
   });
 
@@ -171,6 +218,11 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         onOpenChangeAction={setThumbnailModalOpen}
         videoId={videoId}
       />
+      <ThumbnailGenerateModal 
+        open={thumbnailGenerateModalOpen} 
+        onOpenChangeAction={setThumbnailGenerateModalOpen} 
+        videoId={videoId}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className='flex items-center justify-between mb-8'>
@@ -182,7 +234,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
               <Button 
                 type='submit' 
                 variant='basic' 
-                disabled={update.isPending}
+                disabled={update.isPending || !form.formState.isDirty}
                 className='select-none'
               >
                 Save
@@ -250,7 +302,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                 render={({ field }) => (
                   <FormItem className='flex flex-col gap-y-1'>
                     <FormLabel className='text-base'>
-                    <div
+                      <div
                         title='Generate a description using AI. This feature may not work for non-English video.'
                         className='flex items-center gap-x-3'
                       >
@@ -287,15 +339,19 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                 name='thumbnailUrl'
                 control={form.control}
                 render={() => (
-                  <FormItem className='space-y-2.5'>
-                    <FormLabel className='text-base'>Thumbnail</FormLabel>
+                  <FormItem className='space-y-3'>
+                    <FormLabel>
+                      <span className='text-base'>
+                        Thumbnail
+                      </span>
+                    </FormLabel>
                     <FormControl>
-                      <div className='p-1 border border-dashed border-neutral-700 rounded-md relative h-32 aspect-video group'>
+                      <div className='p-1 border border-dotted border-neutral-700 rounded-md relative h-32 aspect-video group'>
                         <Image
                           src={video.thumbnailUrl ?? THUMBNAIL_FALLBACK}
                           fill
                           alt='Thumbnail'
-                          className='object-cover'
+                          className='object-cover rounded-md'
                         />
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -316,7 +372,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                               Change
                             </DropdownMenuItem>
                             <DropdownMenuItem 
-                              onClick={() => generateThumbnail.mutate({ id: videoId })}
+                              onClick={() => setThumbnailGenerateModalOpen(true)}
                               className='cursor-pointer'
                             >
                               <SparklesIcon className='size-4 mr-1' />
@@ -336,7 +392,6 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                   </FormItem>
                 )}
               >
-
               </FormField>
               <FormField
                 control={form.control}
@@ -376,7 +431,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                     thumbnailUrl={video.thumbnailUrl}
                   />
                 </div>
-                <div className='p-4 flex flex-col gap-y-6'>
+                <div className='p-4 space-y-6'>
                   <div className='flex justify-between items-center gap-x-2'>
                     <div className='flex flex-col gap-y-1'>
                       <p className='text-text text-sm'>

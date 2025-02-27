@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Loader2Icon, ShieldPlusIcon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
+import { TbVideoPlus } from "react-icons/tb";
 import { toast } from "sonner";
 import { trpc } from "@/trpc/client";
 import { ResponsiveModal } from "@/components/reponsive-dialog";
@@ -59,7 +60,7 @@ export const StudioUploadModal = () => {
       >
         {create.isPending 
           ? <Loader2Icon className='animate-spin' /> 
-          : <ShieldPlusIcon />
+          : <TbVideoPlus />
         }
         Create
       </Button>
